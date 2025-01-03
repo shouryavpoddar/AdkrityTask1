@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Telecaller</title>
+</head>
+<body>
+    <h1>Edit Telecaller</h1>
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ telecaller.name }}" readonly>
+        </p>
+        <p>
+            <label for="role">Role:</label>
+            <input type="text" id="role" name="role" value="{{ telecaller.role }}" readonly>
+        </p>
+        <p>
+            <label for="max_leads">Max Leads:</label>
+            <input type="number" id="max_leads" name="max_leads" value="{{ telecaller.max_leads }}">
+        </p>
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>
