@@ -26,7 +26,7 @@ class Telecaller(BaseModel):
 class LeadSourceConfig(BaseModel):
     name = models.CharField(max_length=250)
     telecallers = models.ManyToManyField(Telecaller)
-
+    filter_logic = models.TextField()
 
     @admin.display(description='Telecallers')
     def telecallers_list(self):
@@ -34,11 +34,19 @@ class LeadSourceConfig(BaseModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+
+        super().save(*args, **kwargs)
+
+    def assing_leads(self, list):
+        print(list)
 # Create your models here.
 
 class SalesLead(BaseModel):
     telecaller = models.ForeignKey(Telecaller, on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    source = models.ForeignKey(LeadSourceConfig, on_delete=models.CASCADE, default=1)
 
     @admin.display(description='telecaller_role')
     def telecaller_role(self):

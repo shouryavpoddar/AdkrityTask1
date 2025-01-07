@@ -1,11 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TelecallerViewSet, SalesLeadView, TelecallersWithMoreThanNLeadsAPIView, ConfigViewSet
+from .views import TelecallerViewSet, SalesLeadView, TelecallersWithMoreThanNLeadsAPIView, ConfigViewSet, \
+    LeadSourceConfigViewSet
 
 # Create a router for ViewSets
 router = DefaultRouter()
 router.register(r'telecallers', TelecallerViewSet, basename='telecaller')
 router.register(r'Config', ConfigViewSet, basename='config')
+router.register(r'LeadSourceConfig', LeadSourceConfigViewSet, basename='lead-source-config')
 # Define additional paths for APIs not handled by the router
 urlpatterns = [
     # Include router-generated URLs for ViewSets

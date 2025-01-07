@@ -6,8 +6,8 @@ from rest_framework.decorators import action, api_view
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Telecaller, SalesLead, Config
-from .serializers import TelecallerSerializer, SalesLeadSerializer
+from .models import Telecaller, SalesLead, Config, LeadSourceConfig
+from .serializers import TelecallerSerializer, SalesLeadSerializer, LeadSourceConfigSerializer
 import django_filters.rest_framework
 
 
@@ -129,6 +129,37 @@ class TelecallersWithMoreThanNLeadsAPIView(APIView):
                 {"error": f"An error occurred: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+class LeadSourceConfigViewSet(viewsets.ModelViewSet):
+    queryset = LeadSourceConfig.objects.all()
+    serializer_class = LeadSourceConfigSerializer
+
+    @action(detail=True, methods=['post'], url_path='assign_leads', url_name='assign_leads')
+    def assign_leads(self, request, pk=None):
+        Telecaller.objects.filter()
+
+        try:
+            # Define the `assign` function that will be called in `filter_logic`
+            def assign(telecaller_list):
+                for telecaller in telecaller_list:
+                    SalesLead.objects.create(telecaller=telecaller, user_id=1, source_id=pk)
+
+
+            # Fetch the LeadSourceConfig object using the provided `pk`
+            lead_source_config = self.get_object()
+
+            # Prepare the local context for executing `filter_logic`
+            local_context = {
+                'self': lead_source_config,
+                'assign': assign,  # Include the `assign` function in the context
+            }
+
+            # Execute the filter logic stored in `filter_logic`
+            exec(lead_source_config.filter_logic, globals(), local_context)
+
+            return Response({'message': 'Leads assigned successfully.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Catch and return any errors encountered during execution
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ListTelecallersAPIView(generics.ListAPIView):
     queryset = Telecaller.objects.all()
@@ -136,6 +167,8 @@ class ListTelecallersAPIView(generics.ListAPIView):
 
 class ConfigViewSet(viewsets.ModelViewSet):
     queryset = Config.objects.all()
+
+# Check if telecaller exists
 
     @action(detail=False, methods=['get'], url_path='get-key', url_name='get-config')
     def get(self, request):

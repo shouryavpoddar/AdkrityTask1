@@ -28,11 +28,11 @@ class TelecallerAdmin(admin.ModelAdmin):
     actions = [increase_max_leads_by_one, increase_max_leads_by_custom_value]
 
 class SalesLeadAdmin(admin.ModelAdmin):
-    list_display = ['user', 'telecaller', 'telecaller_role']
+    list_display = ['user', 'telecaller', 'telecaller_role', 'source', 'created', 'modified']  # Adjust fields as per
     list_filter = ['telecaller__role']
 
 class LeadSourceConfigAdmin(admin.ModelAdmin):
-    list_display = ['name', 'telecallers_list']
+    list_display = ['name', 'telecallers_list', "filter_logic",'created', 'modified']  # Adjust fields as per your model
 
 
 admin.site.register(Telecaller, TelecallerAdmin)
